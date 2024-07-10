@@ -33,6 +33,6 @@ The crawler will generate a CSV file named visited_urls.csv in the project direc
 Example output (visited_urls.csv):
 
 URL,Depth
-`https://www.browserscan.net,0`--
-`https://www.browserscan.net/page1,1`--
-`https://www.browserscan.net/page2,1`--
+`https://www.browserscan.net,0`\
+`https://www.browserscan.net/page1,1`\
+`https://www.browserscan.net/page2,1`\
