@@ -2,10 +2,36 @@ import puppeteer from "puppeteer";
 import fs from "fs";
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const randomDelay = () => Math.floor(Math.random() * 3000) + 1000;
+
 (async () => {
   // Initialize Puppeteer
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-infobars",
+      "--window-position=0,0",
+      "--ignore-certifcate-errors",
+      "--ignore-certifcate-errors-spki-list",
+      "--disable-blink-features=AutomationControlled",
+    ],
+  });
   const page = await browser.newPage();
+
+  // Set user agent and viewport
+  await page.setUserAgent(
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+  );
+  await page.setViewport({ width: 1280, height: 800 });
+
+  // Function to simulate human-like mouse movements
+  async function humanLikeMouseMove(page) {
+    await page.mouse.move(0, 0);
+    await page.mouse.move(100, 100, { steps: 10 });
+    await page.mouse.move(200, 200, { steps: 10 });
+  }
 
   // URL to start with
   const startUrl = "https://www.browserscan.net";
@@ -25,10 +51,8 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   async function extractLinks(url) {
     await page.goto(url);
     await page.waitForSelector("body");
-    // Another alternative to extract links
-    // const links = await page.$$eval("a[href]", (el) =>
-    //             el.map((link) => new URL(link.href, window.location.href).toString())
-    //       );
+
+    await humanLikeMouseMove(page);
 
     const links = await page.evaluate(() => {
       const linkElements = document.querySelectorAll("a[href]");
@@ -63,6 +87,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
           depthMap.set(absoluteLink, depth + 1);
         }
       }
+      await sleep(randomDelay()); // Random delay to mimic human behavior
     } catch (error) {
       console.error(`Error visiting ${currentUrl}:`, error);
     }
@@ -79,7 +104,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   // Write data to CSV file
   fs.writeFileSync("visited_urls.csv", "URL,Depth\n" + csvData);
 
-  //   pause execution for a some milliseconds
+  // Pause execution for some milliseconds
   await sleep(999999);
   // Close the browser
   await browser.close();
