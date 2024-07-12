@@ -18,7 +18,7 @@ This project uses Puppeteer to implement a web crawler that navigates websites w
    npm install puppeteer
 
    To run the web crawler, execute the following command:
-   node crawler.js
+   node bfs-depth-crawl.js
 
 ## Configuration
 
