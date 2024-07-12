@@ -46,9 +46,7 @@ URL,Depth
 
 ## Script Overview
 
-````
-```
-
+```JS
 import puppeteer from "puppeteer";
 import fs from "fs";
 
@@ -158,6 +156,4 @@ const randomDelay = () => Math.floor(Math.random() * 3000) + 1000;
   // Close the browser
   await browser.close();
 })();
-
 ```
-````
